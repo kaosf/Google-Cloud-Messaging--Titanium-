@@ -81,10 +81,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		Intent notificationIntent = new Intent(this, GCMIntentService.class);
 
-		Intent launcherintent = new Intent("android.intent.action.MAIN");
+		Intent launcherintent = new Intent();
+		launcherintent.setClassName(
+			systProp.getString("com.activate.gcm.packageName", ""),
+			systProp.getString("com.activate.gcm.className", "")
+		);
 		launcherintent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-		//I'm sure there is a better way ...
-		launcherintent.setComponent(ComponentName.unflattenFromString(systProp.getString("com.activate.gcm.component", "")));
 		
 		// Save data
 		JSONObject json = new JSONObject(data);
@@ -92,9 +94,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 		launcherintent.putExtra("PushNotifications-Data", jsonString);
 		systProp.setString("PushNotifications-Last", jsonString);
 		systProp.setString("com.activate.gcm.last_data", jsonString);
-
-		launcherintent.addCategory("android.intent.category.LAUNCHER");
-
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, launcherintent, 0);
 
